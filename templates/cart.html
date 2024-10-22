@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Carrito de compras{% endblock %}
+
+{% block content %}
+<h2>Tu carrito de compras</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart_items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>${{ item.price }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('cart') }}" class="form-inline">
+                    <input type="hidden" name="product_id" value="{{ item.id }}">
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="0" class="form-control mx-2">
+                    <button type="submit" name="action" value="update" class="btn btn-secondary mx-1">Actualizar</button>
+                    <button type="submit" name="action" value="remove" class="btn btn-danger mx-1">Eliminar</button>
+                </form>
+            </td>
+            <td>${{ item.total }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<h3>Total: ${{ total_price }}</h3>
+<a href="{{ url_for('home') }}" class="btn btn-primary">Seguir comprando</a>
+<a href="{{ url_for('reset_cart') }}" class="btn btn-warning">Reestablecer carrito</a>
+{% endblock %}
+
