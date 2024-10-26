@@ -3,7 +3,7 @@ Library    SeleniumLibrary
 
 *** Variables ***
 ${BASE_URL}    http://localhost:5000
-${BROWSER}     Edge
+${BROWSER}     Firefox
 
 *** Test Cases ***
 
@@ -28,7 +28,7 @@ Update Product Quantity In Cart
     Click Link    xpath=//a[contains(@href,'/add_to_cart/1')]
     Sleep    2s
     Go To    ${BASE_URL}/cart
-    Input Text    xpath=//input[@name='quantity']    2
+    Input Text    xpath=//input[@name='quantity_1']    2
     Click Button    xpath=//button[@name='action' and @value='update']
     Sleep    2s
     Element Should Contain    xpath=//td[text()='$20']    $20
@@ -54,4 +54,15 @@ Reset Cart
     Click Link    xpath=//a[contains(@href,'/reset_cart')]
     Sleep    2s
     Element Should Not Be Visible    xpath=//td[text()='Producto 1']    Producto 1
+    Close Browser
+
+Verify total price in cart
+    [Tags]    Cálculo
+    Open Browser    ${BASE_URL}/home    ${BROWSER}
+    Click Element   xpath=//a[@href='/add_to_cart/1']
+    Click Element   xpath=//a[@href='/add_to_cart/2']
+    Go To           ${BASE_URL}/cart
+    Input Text      xpath=//input[@name='quantity_1']   2
+    Click Button    xpath=//button[@name='action' and @value='update']
+    Element Text Should Be   xpath=//h3[@name='total']   Total: $40
     Close Browser

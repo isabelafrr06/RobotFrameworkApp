@@ -37,12 +37,11 @@ def login():
             session['username'] = username
             return redirect(url_for('home'))
         else:
-            return render_template('login.html', error='Invalid Credentials')
+            return render_template('login.html', error='Credenciales inválidas')
     return render_template('login.html')
 
 @app.route('/home')
 def home():
-    logging.debug(f'cart on home page {cart}')
     return render_template('home.html', products=products)
 
 @app.route('/add_to_cart/<product_id>')
@@ -75,10 +74,11 @@ def cart():
         product_id = request.form['product_id']
         action = request.form['action']
         logging.debug(f'productid {product_id} cart  {cart}')
+        quantity_field = f'quantity_{product_id}'
         # Update or remove item from cart
         if product_id in cart:
             if action == 'update':
-                new_quantity = int(request.form['quantity'])
+                new_quantity = int(request.form[quantity_field])
                 cart[product_id] = max(new_quantity, 0)  # Ensure quantity is not negative
                 logging.debug(f'Updated product_id {product_id} quantity to {cart[product_id]}')
             elif action == 'remove':
@@ -114,4 +114,3 @@ def reset_cart():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
