@@ -21,7 +21,6 @@ def initialize_cart():
         products[1]['id']: 0,  # Initialize for Product 2
         products[2]['id']: 0   # Initialize for Product 3
     }
-    logging.debug(f'Initialized cart: {cart}')  # Log the initialized cart
     return cart
 
 @app.route('/')
@@ -68,23 +67,18 @@ def cart():
         session['cart'] = initialize_cart()  # Ensure cart is a dictionary
 
     cart = session['cart']
-    logging.debug(f'cart on cart page {cart}')
 
     if request.method == 'POST':
         product_id = request.form['product_id']
         action = request.form['action']
-        logging.debug(f'productid {product_id} cart  {cart}')
         quantity_field = f'quantity_{product_id}'
         # Update or remove item from cart
         if product_id in cart:
             if action == 'update':
                 new_quantity = int(request.form[quantity_field])
                 cart[product_id] = max(new_quantity, 0)  # Ensure quantity is not negative
-                logging.debug(f'Updated product_id {product_id} quantity to {cart[product_id]}')
             elif action == 'remove':
                 cart[product_id] = 0  # Set quantity to 0 instead of removing the entry
-                logging.debug(f'Removed product_id {product_id} from cart')
-                logging.debug(f'cart {cart}')
     
     # Prepare cart items for rendering
     cart_items = []
@@ -101,15 +95,12 @@ def cart():
                 cart_items.append({**product, 'quantity': quantity, 'total': total})
                 total_price += total
     
-    logging.debug(f'Cart items: {cart_items}')
-    logging.debug(f'Total price: {total_price}')
     session['cart'] = cart
     return render_template('cart.html', cart_items=cart_items, total_price=total_price)
 
 @app.route('/reset_cart')
 def reset_cart():
     session['cart'] = initialize_cart()
-    logging.debug(f'Cart has been reset {session['cart']}')
     return redirect(url_for('cart'))
 
 if __name__ == '__main__':
