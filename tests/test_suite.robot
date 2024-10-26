@@ -66,3 +66,40 @@ Verify total price in cart
     Click Button    xpath=//button[@name='action' and @value='update']
     Element Text Should Be   xpath=//h3[@name='total']   Total: $40
     Close Browser
+
+Access Cart Page with No Products
+    [Tags]    Cart
+    Open Browser    ${BASE_URL}/home    ${BROWSER}
+    Go To    ${BASE_URL}/cart
+    Page Should Not Contain Element    xpath=//td[contains(text(), 'Producto')]
+    Close Browser
+
+Add Multiple Products to Cart
+    [Tags]    Cart
+    Open Browser    ${BASE_URL}/home    ${BROWSER}
+    Click Link    xpath=//a[contains(@href,'/add_to_cart/1')]
+    Sleep    1s
+    Click Link    xpath=//a[contains(@href,'/add_to_cart/2')]
+    Sleep    1s
+    Go To    ${BASE_URL}/cart
+    Page Should Contain Element    xpath=//td[contains(text(), 'Producto 1')]
+    Page Should Contain Element    xpath=//td[contains(text(), 'Producto 2')]
+    Close Browser
+
+Login with Correct Credentials
+    [Tags]    Login
+    Open Browser    ${BASE_URL}/login    ${BROWSER}
+    Input Text    id=username    admin
+    Input Text    id=password    password
+    Click Button    xpath=//button[contains(text(), 'Iniciar Sesión')]
+    Location Should Be    ${BASE_URL}/home
+    Close Browser
+
+Login with Incorrect Credentials
+    [Tags]    Login
+    Open Browser    ${BASE_URL}/login    ${BROWSER}
+    Input Text    name=username    user1
+    Input Text    name=password    wrongpassword
+    Click Button    xpath=//button[contains(text(), 'Iniciar Sesión')]
+    Page Should Contain Element    xpath=//div[contains(text(), 'Credenciales inválidas')]
+    Close Browser
